@@ -1,0 +1,44 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model TradingPair {
+  baseCurrency  String?
+  createdAt     DateTime @default(now())
+  id            String   @id @default(cuid())
+  orders        Order[]
+  quoteCurrency String?
+  updatedAt     DateTime @updatedAt
+}
+
+model Order {
+  amount        Float?
+  createdAt     DateTime         @default(now())
+  id            String           @id @default(cuid())
+  price         Float?
+  status        EnumOrderStatus?
+  tradingPair   TradingPair?     @relation(fields: [tradingPairId], references: [id])
+  tradingPairId String?
+  updatedAt     DateTime         @updatedAt
+}
+
+model Log {
+  createdAt DateTime      @default(now())
+  id        String        @id @default(cuid())
+  level     EnumLogLevel?
+  message   String?
+  updatedAt DateTime      @updatedAt
+}
+
+enum EnumOrderStatus {
+  Option1
+}
+
+enum EnumLogLevel {
+  Option1
+}
